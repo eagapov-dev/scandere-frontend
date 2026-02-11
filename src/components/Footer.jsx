@@ -72,7 +72,7 @@ export default function Footer() {
               </div>
               <span className="text-xl font-bold text-white">Scandere<span className="text-brand-400">AI</span></span>
             </Link>
-            <p className="text-gray-400 text-sm mb-4 max-w-sm">
+            <p className="text-gray-300 text-sm mb-4 max-w-sm">
               Premium small business resources — templates, checklists, and guides designed to help you launch and grow.
             </p>
             <div className="flex gap-3">
@@ -80,7 +80,8 @@ export default function Footer() {
                 const IconComponent = socialIconMap[s.icon] || FaFacebookF;
                 return (
                   <a key={s.id} href={s.url} target="_blank" rel="noopener noreferrer"
-                    className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center text-gray-400 hover:bg-brand-600 hover:text-white transition">
+                    className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center text-gray-300 hover:bg-brand-600 hover:text-white transition"
+                    aria-label={s.platform}>
                     <IconComponent size={14} />
                   </a>
                 );
@@ -93,11 +94,11 @@ export default function Footer() {
             <h4 className="text-white font-semibold mb-3 text-sm uppercase tracking-wider">Products</h4>
             <ul className="space-y-2">
               <li>
-                <Link to="/products" className="text-gray-400 hover:text-white text-sm transition">All Products</Link>
+                <Link to="/products" className="text-gray-300 hover:text-white text-sm transition">All Products</Link>
               </li>
               {categories.map((cat) => (
                 <li key={cat.id}>
-                  <Link to={`/products?category=${cat.slug}`} className="text-gray-400 hover:text-white text-sm transition">
+                  <Link to={`/products?category=${cat.slug}`} className="text-gray-300 hover:text-white text-sm transition">
                     {cat.name}
                   </Link>
                 </li>
@@ -111,7 +112,7 @@ export default function Footer() {
             <ul className="space-y-2">
               {footerLinks.map((link) => (
                 <li key={link.id}>
-                  <Link to={link.url} className="text-gray-400 hover:text-white text-sm transition">{link.label}</Link>
+                  <Link to={link.url} className="text-gray-300 hover:text-white text-sm transition">{link.label}</Link>
                 </li>
               ))}
             </ul>
@@ -122,10 +123,10 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-gray-800">
         <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-gray-400">
             <span>&copy; {new Date().getFullYear()} Scandere AI. All rights reserved.</span>
           </div>
-          <div className="flex items-center gap-3 text-gray-500">
+          <div className="flex items-center gap-3 text-gray-400">
             <span className="text-xs">We accept:</span>
             <FaCcVisa size={28} />
             <FaCcMastercard size={28} />

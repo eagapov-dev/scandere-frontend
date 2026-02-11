@@ -84,13 +84,13 @@ export default function Header() {
               const IconComponent = socialIconMap[s.icon] || FaFacebookF;
               return (
                 <a key={s.id} href={s.url} target="_blank" rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-white transition" title={s.platform}>
+                  className="text-gray-300 hover:text-white transition" title={s.platform} aria-label={s.platform}>
                   <IconComponent size={13} />
                 </a>
               );
             })}
           </div>
-          <div className="hidden sm:flex items-center gap-4 text-gray-400">
+          <div className="hidden sm:flex items-center gap-4 text-gray-300">
             <span>team@scandere.info</span>
             <span>+1-212-365-8972</span>
           </div>
@@ -137,7 +137,7 @@ export default function Header() {
 
           {/* Right side */}
           <div className="flex items-center gap-3">
-            <Link to="/cart" className="relative p-2 text-gray-600 hover:text-brand-600 transition">
+            <Link to="/cart" className="relative p-2 text-gray-600 hover:text-brand-600 transition" aria-label="Shopping cart">
               <FiShoppingCart size={20} />
               {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
@@ -163,7 +163,7 @@ export default function Header() {
             )}
 
             {/* Mobile hamburger */}
-            <button onClick={() => setMobileOpen(!mobileOpen)} className="lg:hidden p-2 text-gray-600">
+            <button onClick={() => setMobileOpen(!mobileOpen)} className="lg:hidden p-2 text-gray-600" aria-label={mobileOpen ? 'Close menu' : 'Open menu'}>
               {mobileOpen ? <FiX size={22} /> : <FiMenu size={22} />}
             </button>
           </div>
