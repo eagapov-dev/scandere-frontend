@@ -7,5 +7,16 @@ export default defineConfig({
     port: 5173,
     proxy: { '/api': { target: 'http://localhost:8000', changeOrigin: true } },
   },
-  build: { outDir: 'dist' },
+  build: {
+    outDir: 'dist',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          swiper: ['swiper'],
+          icons: ['react-icons'],
+        },
+      },
+    },
+  },
 });

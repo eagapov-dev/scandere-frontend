@@ -103,7 +103,24 @@ export default function Home() {
   return (
     <>
       {/* HERO CAROUSEL BANNER with Swiper */}
-      <section className="relative overflow-hidden hero-section">
+      <section className="relative overflow-hidden hero-section min-h-[400px] md:min-h-[500px]">
+        {homeContent.hero_slides.length === 0 ? (
+          <div className="min-h-[400px] md:min-h-[500px] bg-gradient-to-br from-[#146fe1] via-[#175ab6] to-[#194d8f] animate-pulse flex items-center justify-center">
+            <div className="max-w-7xl mx-auto px-4 py-20 md:py-32 w-full">
+              <div className="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                  <div className="h-12 bg-white/20 rounded-lg mb-6 w-3/4"></div>
+                  <div className="h-6 bg-white/15 rounded mb-4 w-full"></div>
+                  <div className="h-6 bg-white/15 rounded mb-8 w-2/3"></div>
+                  <div className="h-14 bg-white/20 rounded-lg w-48"></div>
+                </div>
+                <div className="hidden md:flex items-center justify-center">
+                  <div className="w-64 h-64 bg-white/10 rounded-full"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
         <Swiper
           modules={[Autoplay, Pagination, Navigation]}
           spaceBetween={0}
@@ -153,6 +170,7 @@ export default function Home() {
             </SwiperSlide>
           );})}
         </Swiper>
+        )}
       </section>
 
       {/* BUNDLE DEALS SECTION */}
@@ -417,12 +435,24 @@ export default function Home() {
       )}
 
       {/* WHY CHOOSE US - Feature Tiles */}
-      <section className="bg-gradient-to-b from-gray-50 to-white py-16">
+      <section className="bg-gradient-to-b from-gray-50 to-white py-16 min-h-[300px]">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-2">Why Choose Our Templates?</h2>
             <p className="text-gray-600">Everything you need to succeed, in one place</p>
           </div>
+          {homeContent.features.length === 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="bg-white rounded-xl border-2 border-gray-200 p-6 animate-pulse">
+                  <div className="w-12 h-12 bg-gray-200 rounded-lg mb-4"></div>
+                  <div className="h-4 bg-gray-200 rounded w-2/3 mb-2"></div>
+                  <div className="h-3 bg-gray-100 rounded w-full"></div>
+                  <div className="h-3 bg-gray-100 rounded w-4/5 mt-1"></div>
+                </div>
+              ))}
+            </div>
+          ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {homeContent.features.map((feat, i) => {
               const IconComponent = iconMap[feat.icon] || FiStar;
@@ -439,11 +469,12 @@ export default function Home() {
               </div>
             );})}
           </div>
+          )}
         </div>
       </section>
 
       {/* ZIG-ZAG SECTIONS - Product Showcase */}
-      <section className="max-w-7xl mx-auto px-4 py-20 space-y-24">
+      <section className="max-w-7xl mx-auto px-4 py-20 space-y-24 min-h-[200px]">
         {homeContent.showcases.map((item, i) => {
           const IconComponent = iconMap[item.icon] || FiCheckCircle;
           return (
@@ -781,6 +812,16 @@ export default function Home() {
             <p className="text-gray-600">Join hundreds of successful business owners</p>
           </div>
 
+          {homeContent.stats.length === 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="h-10 bg-gray-200 rounded w-20 mx-auto mb-2"></div>
+                  <div className="h-4 bg-gray-100 rounded w-24 mx-auto"></div>
+                </div>
+              ))}
+            </div>
+          ) : (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {homeContent.stats.map((stat, i) => (
               <div key={stat.id || i}>
@@ -789,6 +830,7 @@ export default function Home() {
               </div>
             ))}
           </div>
+          )}
         </div>
       </section>
     </>
