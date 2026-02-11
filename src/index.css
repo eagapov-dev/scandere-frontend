@@ -63,6 +63,18 @@
   }
 }
 
+/* Products & QA Swiper Styles */
+.products-swiper,
+.qa-swiper {
+  padding-bottom: 48px !important;
+}
+
+.products-swiper .swiper-slide,
+.qa-swiper .swiper-slide {
+  height: auto;
+}
+
+
 /* General Swiper overrides */
 .swiper-pagination-bullet-active { background: #1b87f5 !important; }
 .swiper-button-next, .swiper-button-prev { color: #1b87f5 !important; }

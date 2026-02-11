@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Pagination, Navigation, EffectFade } from 'swiper/modules';
+import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
-import 'swiper/css/effect-fade';
 import { api } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
@@ -20,6 +19,17 @@ import {
 const iconMap = {
   FiTrendingUp, FiPackage, FiDownload, FiAward, FiZap, FiLock, FiStar, FiClock,
   FiCheckCircle, FiCreditCard, FiTarget
+};
+
+// Map Tailwind gradient classes to CSS gradient values
+const gradientMap = {
+  'from-brand-700 via-brand-800 to-brand-900': 'linear-gradient(to bottom right, #146fe1, #175ab6, #194d8f)',
+  'from-emerald-600 via-emerald-700 to-emerald-900': 'linear-gradient(to bottom right, #059669, #047857, #064e3b)',
+  'from-violet-600 via-violet-700 to-violet-900': 'linear-gradient(to bottom right, #7c3aed, #6d28d9, #4c1d95)',
+  'from-orange-600 via-orange-700 to-orange-900': 'linear-gradient(to bottom right, #ea580c, #c2410c, #7c2d12)',
+  'from-blue-500 to-cyan-500': 'linear-gradient(to bottom right, #3b82f6, #06b6d4)',
+  'from-green-500 to-emerald-500': 'linear-gradient(to bottom right, #22c55e, #10b981)',
+  'from-purple-500 to-pink-500': 'linear-gradient(to bottom right, #a855f7, #ec4899)',
 };
 
 export default function Home() {
@@ -95,8 +105,7 @@ export default function Home() {
       {/* HERO CAROUSEL BANNER with Swiper */}
       <section className="relative overflow-hidden hero-section">
         <Swiper
-          modules={[Autoplay, Pagination, Navigation, EffectFade]}
-          effect="fade"
+          modules={[Autoplay, Pagination, Navigation]}
           spaceBetween={0}
           slidesPerView={1}
           autoplay={{ delay: 5000, disableOnInteraction: false }}
@@ -112,7 +121,7 @@ export default function Home() {
             const IconComponent = iconMap[slide.icon] || FiPackage;
             return (
             <SwiperSlide key={slide.id || i}>
-              <div className={`bg-gradient-to-br ${slide.bg_gradient} relative`}>
+              <div className="relative" style={{ background: gradientMap[slide.bg_gradient] || '#1b87f5' }}>
                 <div className="max-w-7xl mx-auto px-4 py-20 md:py-32">
                   <div className="grid md:grid-cols-2 gap-12 items-center">
                     {/* Left: Text Content */}
@@ -271,11 +280,10 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Products Grid */}
-          <div className="space-y-6 md:space-y-8">
-            {/* First 3 products */}
+          {/* Products: Grid if <=3, Swiper slider if >3 */}
+          {displayProducts.length <= 3 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-10">
-              {displayProducts.slice(0, 3).map((product) => {
+              {displayProducts.map((product) => {
                 const hasOriginalPrice = product.original_price && parseFloat(product.original_price) > parseFloat(product.price);
                 const originalPrice = hasOriginalPrice ? parseFloat(product.original_price) : 0;
                 const currentPrice = product.is_free ? 0 : parseFloat(product.price);
@@ -288,80 +296,43 @@ export default function Home() {
                     to={`/products/${product.slug}`}
                     className="group bg-white rounded-3xl border-2 border-gray-200 hover:border-brand-500 shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col max-w-sm mx-auto w-full"
                   >
-                    {/* Header: Category + Discount Badge */}
                     <div className="flex items-center justify-between p-4 border-b bg-gray-50">
-                      {/* Category Badge - Left */}
                       {product.category && (
                         <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-brand-100 text-brand-700 uppercase tracking-wide">
                           {product.category.name}
                         </span>
                       )}
-
-                      {/* Discount Badge - Right */}
                       {discount > 0 && (
                         <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-red-600 to-orange-600 text-white">
                           SAVE {discount}%
                         </span>
                       )}
                     </div>
-
-                    {/* Body */}
                     <div className="p-6 flex flex-col flex-1">
-                      {/* Icon */}
                       <div className="flex items-center justify-center mb-6">
                         <div className="w-20 h-20 bg-gradient-to-br from-brand-100 to-brand-200 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
                           <FiFileText className="text-brand-600" size={40} />
                         </div>
                       </div>
-
-                      {/* Title */}
-                      <h3 className="text-xl font-bold text-gray-900 mb-3 text-center group-hover:text-brand-600 transition">
-                        {product.title}
-                      </h3>
-
-                      {/* Description */}
-                      <p className="text-sm text-gray-600 text-center mb-6 leading-relaxed flex-1">
-                        {product.short_description || 'Professional template to help you succeed in your business.'}
-                      </p>
-
-                      {/* Pricing */}
+                      <h3 className="text-xl font-bold text-gray-900 mb-3 text-center group-hover:text-brand-600 transition">{product.title}</h3>
+                      <p className="text-sm text-gray-600 text-center mb-6 leading-relaxed flex-1">{product.short_description || 'Professional template to help you succeed in your business.'}</p>
                       <div className="text-center mb-4 pt-4 border-t">
                         {product.is_free ? (
                           <span className="text-3xl font-bold text-green-600">FREE</span>
                         ) : (
                           <>
-                            {discount > 0 && (
-                              <div className="text-sm text-gray-400 line-through mb-1">
-                                ${originalPrice.toFixed(2)}
-                              </div>
-                            )}
-                            <div className="text-4xl font-bold text-gray-900">
-                              ${currentPrice.toFixed(2)}
-                            </div>
+                            {discount > 0 && <div className="text-sm text-gray-400 line-through mb-1">${originalPrice.toFixed(2)}</div>}
+                            <div className="text-4xl font-bold text-gray-900">${currentPrice.toFixed(2)}</div>
                           </>
                         )}
                       </div>
-
-                      {/* Add to Cart Button / Purchased Badge */}
                       {isPurchased ? (
                         <div className="w-full bg-green-100 text-green-700 font-bold py-3 px-6 rounded-lg flex items-center justify-center gap-2">
-                          <FiCheck size={18} />
-                          Purchased
+                          <FiCheck size={18} /> Purchased
                         </div>
                       ) : (
-                        <button
-                          onClick={(e) => {
-                            e.preventDefault();
-                            if (!user) {
-                              window.location.href = '/login';
-                            } else {
-                              addToCart(product.id);
-                            }
-                          }}
-                          className="w-full bg-brand-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-brand-700 transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
-                        >
-                          <FiShoppingCart size={18} />
-                          Add to Cart
+                        <button onClick={(e) => { e.preventDefault(); if (!user) { window.location.href = '/login'; } else { addToCart(product.id); } }} className="w-full bg-brand-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-brand-700 transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl">
+                          <FiShoppingCart size={18} /> Add to Cart
                         </button>
                       )}
                     </div>
@@ -369,106 +340,78 @@ export default function Home() {
                 );
               })}
             </div>
+          ) : (
+            <Swiper
+              modules={[Autoplay, Pagination]}
+              spaceBetween={24}
+              slidesPerView={1}
+              breakpoints={{
+                640: { slidesPerView: 2 },
+                1024: { slidesPerView: 3 },
+              }}
+              autoplay={{ delay: 4000, disableOnInteraction: false }}
+              pagination={{ clickable: true }}
+              className="products-swiper pb-12"
+            >
+              {displayProducts.map((product) => {
+                const hasOriginalPrice = product.original_price && parseFloat(product.original_price) > parseFloat(product.price);
+                const originalPrice = hasOriginalPrice ? parseFloat(product.original_price) : 0;
+                const currentPrice = product.is_free ? 0 : parseFloat(product.price);
+                const discount = hasOriginalPrice ? Math.round(((originalPrice - currentPrice) / originalPrice) * 100) : 0;
+                const isPurchased = purchasedProductIds.includes(product.id);
 
-            {/* Second Row - 3 cards */}
-            {displayProducts.length > 3 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-10">
-                {displayProducts.slice(3, 6).map((product) => {
-                  const hasOriginalPrice = product.original_price && parseFloat(product.original_price) > parseFloat(product.price);
-                  const originalPrice = hasOriginalPrice ? parseFloat(product.original_price) : 0;
-                  const currentPrice = product.is_free ? 0 : parseFloat(product.price);
-                  const discount = hasOriginalPrice ? Math.round(((originalPrice - currentPrice) / originalPrice) * 100) : 0;
-                  const isPurchased = purchasedProductIds.includes(product.id);
-
-                  return (
+                return (
+                  <SwiperSlide key={product.id} className="h-auto pb-2">
                     <Link
-                      key={product.id}
                       to={`/products/${product.slug}`}
-                      className="group bg-white rounded-3xl border-2 border-gray-200 hover:border-brand-500 shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col max-w-sm mx-auto w-full"
+                      className="group bg-white rounded-3xl border-2 border-gray-200 hover:border-brand-500 shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col h-full"
                     >
-                      {/* Header: Category + Discount Badge */}
                       <div className="flex items-center justify-between p-4 border-b bg-gray-50">
-                        {/* Category Badge - Left */}
                         {product.category && (
                           <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-brand-100 text-brand-700 uppercase tracking-wide">
                             {product.category.name}
                           </span>
                         )}
-
-                        {/* Discount Badge - Right */}
                         {discount > 0 && (
                           <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-red-600 to-orange-600 text-white">
                             SAVE {discount}%
                           </span>
                         )}
                       </div>
-
-                      {/* Body */}
                       <div className="p-6 flex flex-col flex-1">
-                        {/* Icon */}
                         <div className="flex items-center justify-center mb-6">
                           <div className="w-20 h-20 bg-gradient-to-br from-brand-100 to-brand-200 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
                             <FiFileText className="text-brand-600" size={40} />
                           </div>
                         </div>
-
-                        {/* Title */}
-                        <h3 className="text-xl font-bold text-gray-900 mb-3 text-center group-hover:text-brand-600 transition">
-                          {product.title}
-                        </h3>
-
-                        {/* Description */}
-                        <p className="text-sm text-gray-600 text-center mb-6 leading-relaxed flex-1">
-                          {product.short_description || 'Professional template to help you succeed in your business.'}
-                        </p>
-
-                        {/* Pricing */}
+                        <h3 className="text-xl font-bold text-gray-900 mb-3 text-center group-hover:text-brand-600 transition">{product.title}</h3>
+                        <p className="text-sm text-gray-600 text-center mb-6 leading-relaxed flex-1">{product.short_description || 'Professional template to help you succeed in your business.'}</p>
                         <div className="text-center mb-4 pt-4 border-t">
                           {product.is_free ? (
                             <span className="text-3xl font-bold text-green-600">FREE</span>
                           ) : (
                             <>
-                              {discount > 0 && (
-                                <div className="text-sm text-gray-400 line-through mb-1">
-                                  ${originalPrice.toFixed(2)}
-                                </div>
-                              )}
-                              <div className="text-4xl font-bold text-gray-900">
-                                ${currentPrice.toFixed(2)}
-                              </div>
+                              {discount > 0 && <div className="text-sm text-gray-400 line-through mb-1">${originalPrice.toFixed(2)}</div>}
+                              <div className="text-4xl font-bold text-gray-900">${currentPrice.toFixed(2)}</div>
                             </>
                           )}
                         </div>
-
-                        {/* Add to Cart Button / Purchased Badge */}
                         {isPurchased ? (
                           <div className="w-full bg-green-100 text-green-700 font-bold py-3 px-6 rounded-lg flex items-center justify-center gap-2">
-                            <FiCheck size={18} />
-                            Purchased
+                            <FiCheck size={18} /> Purchased
                           </div>
                         ) : (
-                          <button
-                            onClick={(e) => {
-                              e.preventDefault();
-                              if (!user) {
-                                window.location.href = '/login';
-                              } else {
-                                addToCart(product.id);
-                              }
-                            }}
-                            className="w-full bg-brand-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-brand-700 transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
-                          >
-                            <FiShoppingCart size={18} />
-                            Add to Cart
+                          <button onClick={(e) => { e.preventDefault(); if (!user) { window.location.href = '/login'; } else { addToCart(product.id); } }} className="w-full bg-brand-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-brand-700 transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl">
+                            <FiShoppingCart size={18} /> Add to Cart
                           </button>
                         )}
                       </div>
                     </Link>
-                  );
-                })}
-              </div>
-            )}
-            </div>
+                  </SwiperSlide>
+                );
+              })}
+            </Swiper>
+          )}
           </div>
         </section>
       )}
@@ -510,7 +453,7 @@ export default function Home() {
           >
             {/* Visual Side */}
             <div className="md:w-1/2">
-              <div className={`relative bg-gradient-to-br ${item.gradient} rounded-3xl p-16 shadow-2xl`}>
+              <div className="relative rounded-3xl p-16 shadow-2xl" style={{ background: gradientMap[item.gradient] || '#1b87f5' }}>
                 {/* Decorative elements */}
                 <div className="absolute top-4 right-4 w-24 h-24 bg-white/10 rounded-full blur-2xl"></div>
                 <div className="absolute bottom-4 left-4 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
@@ -610,7 +553,7 @@ export default function Home() {
                   </div>
 
                   {/* Icon */}
-                  <div className={`w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br ${s.color} flex items-center justify-center shadow-xl`}>
+                  <div className="w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center shadow-xl" style={{ background: gradientMap[s.color] || '#1b87f5' }}>
                     <s.icon size={36} className="text-white" />
                   </div>
 
@@ -649,93 +592,136 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Q&A Cards */}
+          {/* Q&A Cards: Grid if <=3, Swiper slider if >3 */}
           {recentQA.length > 0 && (
             <>
               <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">Featured Questions</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {recentQA.map((qa) => (
-                <div
-                  key={qa.id}
-                  className="bg-white rounded-2xl border-2 border-gray-200 hover:border-brand-300 hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col"
-                >
-                  {/* Product badge (only if product exists) */}
-                  {qa.product && (
-                    <div className="bg-brand-50 border-b border-brand-100 px-5 py-3">
-                      <Link
-                        to={`/products/${qa.product.slug}`}
-                        className="text-sm font-semibold text-brand-700 hover:text-brand-800 transition-colors flex items-center gap-2"
-                      >
-                        <FiFileText size={14} />
-                        {qa.product.title}
-                      </Link>
-                    </div>
-                  )}
-                  {!qa.product && (
-                    <div className="bg-gray-50 border-b border-gray-100 px-5 py-3">
-                      <div className="text-sm font-semibold text-gray-600 flex items-center gap-2">
-                        <FiMessageCircle size={14} />
-                        General Question
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Q&A Content */}
-                  <div className="p-5 flex-1 flex flex-col">
-                    {/* Question */}
-                    <div className="mb-4">
-                      <div className="flex items-start gap-3 mb-2">
-                        <div className="w-7 h-7 bg-brand-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <span className="text-white font-bold text-xs">Q</span>
+              {recentQA.length <= 3 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {recentQA.map((qa) => (
+                    <div key={qa.id} className="bg-white rounded-2xl border-2 border-gray-200 hover:border-brand-300 hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col">
+                      {qa.product ? (
+                        <div className="bg-brand-50 border-b border-brand-100 px-5 py-3">
+                          <Link to={`/products/${qa.product.slug}`} className="text-sm font-semibold text-brand-700 hover:text-brand-800 transition-colors flex items-center gap-2">
+                            <FiFileText size={14} /> {qa.product.title}
+                          </Link>
                         </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="font-medium text-gray-900 text-sm">
-                              {qa.user.first_name} {qa.user.last_name}
-                            </span>
+                      ) : (
+                        <div className="bg-gray-50 border-b border-gray-100 px-5 py-3">
+                          <div className="text-sm font-semibold text-gray-600 flex items-center gap-2">
+                            <FiMessageCircle size={14} /> General Question
                           </div>
-                          <p className="text-gray-700 text-sm leading-relaxed">
-                            {qa.body.length > 120 ? `${qa.body.substring(0, 120)}...` : qa.body}
-                          </p>
                         </div>
-                      </div>
-                    </div>
-
-                    {/* Answer */}
-                    <div className="mt-auto">
-                      <div className="flex items-start gap-3 pt-3 border-t border-gray-100">
-                        <div className="w-7 h-7 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <span className="text-white font-bold text-xs">A</span>
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="font-semibold text-gray-900 text-sm">Scandere AI Team</span>
-                            <span className="text-xs px-2 py-0.5 bg-green-100 text-green-700 rounded-full font-medium">
-                              Official
-                            </span>
+                      )}
+                      <div className="p-5 flex-1 flex flex-col">
+                        <div className="mb-4">
+                          <div className="flex items-start gap-3 mb-2">
+                            <div className="w-7 h-7 bg-brand-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                              <span className="text-white font-bold text-xs">Q</span>
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="font-medium text-gray-900 text-sm">{qa.user.first_name} {qa.user.last_name}</span>
+                              </div>
+                              <p className="text-gray-700 text-sm leading-relaxed">{qa.body.length > 120 ? `${qa.body.substring(0, 120)}...` : qa.body}</p>
+                            </div>
                           </div>
-                          <p className="text-gray-700 text-sm leading-relaxed">
-                            {qa.answer.length > 100 ? `${qa.answer.substring(0, 100)}...` : qa.answer}
-                          </p>
+                        </div>
+                        <div className="mt-auto">
+                          <div className="flex items-start gap-3 pt-3 border-t border-gray-100">
+                            <div className="w-7 h-7 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                              <span className="text-white font-bold text-xs">A</span>
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="font-semibold text-gray-900 text-sm">Scandere AI Team</span>
+                                <span className="text-xs px-2 py-0.5 bg-green-100 text-green-700 rounded-full font-medium">Official</span>
+                              </div>
+                              <p className="text-gray-700 text-sm leading-relaxed">{qa.answer.length > 100 ? `${qa.answer.substring(0, 100)}...` : qa.answer}</p>
+                            </div>
+                          </div>
                         </div>
                       </div>
+                      {qa.product && (
+                        <div className="px-5 py-3 bg-gray-50 border-t">
+                          <Link to={`/products/${qa.product.slug}#qa`} className="text-sm text-brand-600 hover:text-brand-700 font-medium inline-flex items-center gap-1 transition-colors">
+                            View on product page <FiArrowRight size={14} />
+                          </Link>
+                        </div>
+                      )}
                     </div>
-                  </div>
-
-                  {/* View full Q&A link (only if product exists) */}
-                  {qa.product && (
-                    <div className="px-5 py-3 bg-gray-50 border-t">
-                      <Link
-                        to={`/products/${qa.product.slug}#qa`}
-                        className="text-sm text-brand-600 hover:text-brand-700 font-medium inline-flex items-center gap-1 transition-colors"
-                      >
-                        View on product page <FiArrowRight size={14} />
-                      </Link>
-                    </div>
-                  )}
+                  ))}
                 </div>
-              ))}
-              </div>
+              ) : (
+                <Swiper
+                  modules={[Autoplay, Pagination]}
+                  spaceBetween={24}
+                  slidesPerView={1}
+                  breakpoints={{
+                    640: { slidesPerView: 2 },
+                    1024: { slidesPerView: 3 },
+                  }}
+                  autoplay={{ delay: 5000, disableOnInteraction: false }}
+                  pagination={{ clickable: true }}
+                  className="qa-swiper pb-12"
+                >
+                  {recentQA.map((qa) => (
+                    <SwiperSlide key={qa.id} className="h-auto pb-2">
+                      <div className="bg-white rounded-2xl border-2 border-gray-200 hover:border-brand-300 hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col h-full">
+                        {qa.product ? (
+                          <div className="bg-brand-50 border-b border-brand-100 px-5 py-3">
+                            <Link to={`/products/${qa.product.slug}`} className="text-sm font-semibold text-brand-700 hover:text-brand-800 transition-colors flex items-center gap-2">
+                              <FiFileText size={14} /> {qa.product.title}
+                            </Link>
+                          </div>
+                        ) : (
+                          <div className="bg-gray-50 border-b border-gray-100 px-5 py-3">
+                            <div className="text-sm font-semibold text-gray-600 flex items-center gap-2">
+                              <FiMessageCircle size={14} /> General Question
+                            </div>
+                          </div>
+                        )}
+                        <div className="p-5 flex-1 flex flex-col">
+                          <div className="mb-4">
+                            <div className="flex items-start gap-3 mb-2">
+                              <div className="w-7 h-7 bg-brand-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <span className="text-white font-bold text-xs">Q</span>
+                              </div>
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <span className="font-medium text-gray-900 text-sm">{qa.user.first_name} {qa.user.last_name}</span>
+                                </div>
+                                <p className="text-gray-700 text-sm leading-relaxed">{qa.body.length > 120 ? `${qa.body.substring(0, 120)}...` : qa.body}</p>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="mt-auto">
+                            <div className="flex items-start gap-3 pt-3 border-t border-gray-100">
+                              <div className="w-7 h-7 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <span className="text-white font-bold text-xs">A</span>
+                              </div>
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <span className="font-semibold text-gray-900 text-sm">Scandere AI Team</span>
+                                  <span className="text-xs px-2 py-0.5 bg-green-100 text-green-700 rounded-full font-medium">Official</span>
+                                </div>
+                                <p className="text-gray-700 text-sm leading-relaxed">{qa.answer.length > 100 ? `${qa.answer.substring(0, 100)}...` : qa.answer}</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        {qa.product && (
+                          <div className="px-5 py-3 bg-gray-50 border-t">
+                            <Link to={`/products/${qa.product.slug}#qa`} className="text-sm text-brand-600 hover:text-brand-700 font-medium inline-flex items-center gap-1 transition-colors">
+                              View on product page <FiArrowRight size={14} />
+                            </Link>
+                          </div>
+                        )}
+                      </div>
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              )}
 
               {/* CTA to view more */}
               <div className="text-center mt-10">
