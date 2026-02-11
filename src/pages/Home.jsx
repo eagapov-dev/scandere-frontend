@@ -47,25 +47,14 @@ export default function Home() {
   const [submitting, setSubmitting] = useState(false);
   const { user, purchasedProductIds } = useAuth();
   const { addBundle, addToCart } = useCart();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.getFeatured()
-      .then(setFeatured)
-      .catch(err => {
-        console.error('Failed to load featured products:', err);
-      });
-
-    api.getRecentQA(6)
-      .then(setRecentQA)
-      .catch(err => {
-        console.error('Failed to load recent Q&A:', err);
-      });
-
-    api.getHomeContent()
-      .then(setHomeContent)
-      .catch(err => {
-        console.error('Failed to load home content:', err);
-      });
+    Promise.all([
+      api.getFeatured().then(setFeatured).catch(err => console.error('Failed to load featured products:', err)),
+      api.getRecentQA(6).then(setRecentQA).catch(err => console.error('Failed to load recent Q&A:', err)),
+      api.getHomeContent().then(setHomeContent).catch(err => console.error('Failed to load home content:', err)),
+    ]).finally(() => setLoading(false));
   }, []);
 
   // Auto-rotate carousel
@@ -102,20 +91,31 @@ export default function Home() {
 
   return (
     <>
-      {/* HERO CAROUSEL BANNER with Swiper */}
-      <section className="relative overflow-hidden hero-section min-h-[400px] md:min-h-[500px]">
+      {/* HERO CAROUSEL BANNER */}
+      <section className="relative overflow-hidden h-[400px] md:h-[500px]">
         {homeContent.hero_slides.length === 0 ? (
-          <div className="min-h-[400px] md:min-h-[500px] bg-gradient-to-br from-[#146fe1] via-[#175ab6] to-[#194d8f] animate-pulse flex items-center justify-center">
-            <div className="max-w-7xl mx-auto px-4 py-20 md:py-32 w-full">
+          <div className="h-full relative" style={{ background: 'linear-gradient(to bottom right, #146fe1, #175ab6, #194d8f)' }}>
+            <div className="max-w-7xl mx-auto px-4 py-16 md:py-28">
               <div className="grid md:grid-cols-2 gap-12 items-center">
-                <div>
-                  <div className="h-12 bg-white/20 rounded-lg mb-6 w-3/4"></div>
-                  <div className="h-6 bg-white/15 rounded mb-4 w-full"></div>
-                  <div className="h-6 bg-white/15 rounded mb-8 w-2/3"></div>
-                  <div className="h-14 bg-white/20 rounded-lg w-48"></div>
+                <div className="text-white z-10">
+                  <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+                    Professional Business Templates
+                  </h1>
+                  <p className="text-lg md:text-xl text-white/90 mb-8 leading-relaxed">
+                    Launch and grow your business with expert-crafted templates, checklists, and guides
+                  </p>
+                  <Link
+                    to="/products"
+                    className="inline-flex items-center gap-2 bg-white text-gray-900 font-semibold px-8 py-4 rounded-lg hover:bg-gray-100 transition-all text-lg shadow-xl"
+                  >
+                    Browse Products <FiArrowRight />
+                  </Link>
                 </div>
                 <div className="hidden md:flex items-center justify-center">
-                  <div className="w-64 h-64 bg-white/10 rounded-full"></div>
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-white/10 rounded-full blur-3xl"></div>
+                    <FiPackage className="text-white/20 relative z-10" size={280} strokeWidth={0.5} />
+                  </div>
                 </div>
               </div>
             </div>
@@ -138,10 +138,9 @@ export default function Home() {
             const IconComponent = iconMap[slide.icon] || FiPackage;
             return (
             <SwiperSlide key={slide.id || i}>
-              <div className="relative" style={{ background: gradientMap[slide.bg_gradient] || '#1b87f5' }}>
-                <div className="max-w-7xl mx-auto px-4 py-20 md:py-32">
+              <div className="relative h-full" style={{ background: gradientMap[slide.bg_gradient] || '#1b87f5' }}>
+                <div className="max-w-7xl mx-auto px-4 py-16 md:py-28">
                   <div className="grid md:grid-cols-2 gap-12 items-center">
-                    {/* Left: Text Content */}
                     <div className="text-white z-10">
                       <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
                         {slide.title}
@@ -156,8 +155,6 @@ export default function Home() {
                         {slide.cta_text} <FiArrowRight />
                       </Link>
                     </div>
-
-                    {/* Right: Large Icon Illustration */}
                     <div className="hidden md:flex items-center justify-center">
                       <div className="relative">
                         <div className="absolute inset-0 bg-white/10 rounded-full blur-3xl"></div>
@@ -174,6 +171,26 @@ export default function Home() {
       </section>
 
       {/* BUNDLE DEALS SECTION */}
+      {loading && bundles.length === 0 && (
+        <section className="bg-gradient-to-b from-orange-50 to-white py-12 md:py-16 border-b">
+          <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 animate-pulse">
+            <div className="h-6 w-28 bg-red-100 rounded-full mb-3"></div>
+            <div className="h-8 bg-gray-200 rounded w-72 mb-2"></div>
+            <div className="h-4 bg-gray-100 rounded w-56 mb-8"></div>
+            <div className="bg-gradient-to-br from-orange-100 to-pink-100 rounded-2xl md:rounded-3xl p-5 sm:p-6 md:p-10">
+              <div className="h-6 bg-white/40 rounded w-32 mb-4"></div>
+              <div className="h-10 bg-white/30 rounded w-3/4 mb-3"></div>
+              <div className="h-5 bg-white/20 rounded w-2/3 mb-6"></div>
+              <div className="bg-white/20 rounded-lg p-4 mb-6 space-y-3">
+                <div className="h-4 bg-white/30 rounded w-full"></div>
+                <div className="h-4 bg-white/30 rounded w-full"></div>
+                <div className="h-4 bg-white/30 rounded w-5/6"></div>
+              </div>
+              <div className="h-12 bg-white/30 rounded-lg w-52"></div>
+            </div>
+          </div>
+        </section>
+      )}
       {bundles.length > 0 && (
       <section className="bg-gradient-to-b from-orange-50 to-white py-12 md:py-16 border-b">
         <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16">
@@ -284,6 +301,32 @@ export default function Home() {
       )}
 
       {/* FEATURED PRODUCTS SECTION */}
+      {loading && displayProducts.length === 0 && (
+        <section className="bg-gradient-to-b from-blue-50 to-white py-12 md:py-16 border-b">
+          <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 animate-pulse">
+            <div className="h-6 w-36 bg-brand-100 rounded-full mb-3"></div>
+            <div className="h-8 bg-gray-200 rounded w-56 mb-2"></div>
+            <div className="h-4 bg-gray-100 rounded w-64 mb-8"></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="bg-white rounded-3xl border-2 border-gray-200 overflow-hidden">
+                  <div className="p-4 border-b bg-gray-50">
+                    <div className="h-5 bg-gray-200 rounded w-24"></div>
+                  </div>
+                  <div className="p-6">
+                    <div className="w-20 h-20 bg-gray-100 rounded-2xl mx-auto mb-6"></div>
+                    <div className="h-5 bg-gray-200 rounded w-3/4 mx-auto mb-3"></div>
+                    <div className="h-4 bg-gray-100 rounded w-full mb-1"></div>
+                    <div className="h-4 bg-gray-100 rounded w-2/3 mx-auto mb-6"></div>
+                    <div className="h-10 bg-gray-200 rounded w-24 mx-auto mb-4"></div>
+                    <div className="h-11 bg-gray-200 rounded-lg w-full"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
       {displayProducts.length > 0 && (
       <section className="bg-gradient-to-b from-blue-50 to-white py-12 md:py-16 border-b">
         <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16">

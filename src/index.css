@@ -9,7 +9,11 @@
 /* Swiper Hero Carousel Styles */
 .hero-swiper {
   width: 100%;
-  height: auto;
+  height: 100%;
+}
+
+.hero-swiper .swiper-slide > div {
+  min-height: 100%;
 }
 
 .hero-swiper .swiper-pagination {
