@@ -34,6 +34,9 @@ class ApiService {
   async logout() { await this.post('/auth/logout'); this.clearToken(); }
   getUser() { return this.get('/auth/user'); }
   forgotPassword(email) { return this.post('/auth/forgot-password', { email }); }
+  resetPassword(token, email, password, password_confirmation) {
+    return this.post('/auth/reset-password', { token, email, password, password_confirmation });
+  }
 
   // Email Verification
   verifyEmail(token) { return this.post('/auth/email/verify', { token }); }
