@@ -31,6 +31,7 @@ const AdminHomeShowcases = lazy(() => import('./pages/admin/AdminHomeShowcases')
 const AdminSocialLinks = lazy(() => import('./pages/admin/AdminSocialLinks'));
 const AdminNavigationLinks = lazy(() => import('./pages/admin/AdminNavigationLinks'));
 const AdminSubscribers = lazy(() => import('./pages/admin/AdminSubscribers'));
+const AdminUsers = lazy(() => import('./pages/admin/AdminUsers'));
 const AdminOrders = lazy(() => import('./pages/admin/AdminOrders'));
 const AdminComments = lazy(() => import('./pages/admin/AdminComments'));
 const AdminMessages = lazy(() => import('./pages/admin/AdminMessages'));
@@ -91,6 +92,7 @@ function AppContent() {
               <Route path="/admin/social-links" element={<ProtectedRoute admin><AdminSocialLinks /></ProtectedRoute>} />
               <Route path="/admin/navigation-links" element={<ProtectedRoute admin><AdminNavigationLinks /></ProtectedRoute>} />
               <Route path="/admin/subscribers" element={<ProtectedRoute admin><AdminSubscribers /></ProtectedRoute>} />
+              <Route path="/admin/users" element={<ProtectedRoute admin><AdminUsers /></ProtectedRoute>} />
               <Route path="/admin/newsletter" element={<ProtectedRoute admin><AdminNewsletter /></ProtectedRoute>} />
               <Route path="/admin/orders" element={<ProtectedRoute admin><AdminOrders /></ProtectedRoute>} />
               <Route path="/admin/comments" element={<ProtectedRoute admin><AdminComments /></ProtectedRoute>} />

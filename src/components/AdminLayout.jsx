@@ -16,6 +16,7 @@ export default function AdminLayout({ children }) {
     { path: '/admin/social-links', label: 'Social Links' },
     { path: '/admin/navigation-links', label: 'Nav Links' },
     { path: '/admin/subscribers', label: 'Subscribers' },
+    { path: '/admin/users', label: 'Users' },
     { path: '/admin/newsletter', label: 'Newsletter' },
     { path: '/admin/orders', label: 'Orders' },
     { path: '/admin/comments', label: 'Comments' },
