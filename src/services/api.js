@@ -35,6 +35,11 @@ class ApiService {
   getUser() { return this.get('/auth/user'); }
   forgotPassword(email) { return this.post('/auth/forgot-password', { email }); }
 
+  // Email Verification
+  verifyEmail(token) { return this.post('/auth/email/verify', { token }); }
+  resendVerification() { return this.post('/auth/email/resend'); }
+  getVerificationStatus() { return this.get('/auth/email/verification-status'); }
+
   // Public
   getFeatured() { return this.get('/featured'); }
   getProducts(params = {}) {
