@@ -8,6 +8,7 @@ export default function AdminLayout({ children }) {
     { path: '/admin/products', label: 'Products' },
     { path: '/admin/bundles', label: 'Bundles' },
     { path: '/admin/categories', label: 'Categories' },
+    { path: '/admin/pages', label: 'Pages' },
     { path: '/admin/faqs', label: 'FAQs' },
     { path: '/admin/hero-slides', label: 'Hero Slides' },
     { path: '/admin/home-features', label: 'Features' },

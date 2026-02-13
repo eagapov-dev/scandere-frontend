@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
 import Header from './components/Header';
@@ -37,6 +38,8 @@ const AdminOrders = lazy(() => import('./pages/admin/AdminOrders'));
 const AdminComments = lazy(() => import('./pages/admin/AdminComments'));
 const AdminMessages = lazy(() => import('./pages/admin/AdminMessages'));
 const AdminNewsletter = lazy(() => import('./pages/admin/AdminNewsletter'));
+const AdminPages = lazy(() => import('./pages/admin/AdminPages'));
+const Page = lazy(() => import('./pages/Page'));
 
 function LoadingSpinner() {
   return (
@@ -99,14 +102,10 @@ function AppContent() {
               <Route path="/admin/orders" element={<ProtectedRoute admin><AdminOrders /></ProtectedRoute>} />
               <Route path="/admin/comments" element={<ProtectedRoute admin><AdminComments /></ProtectedRoute>} />
               <Route path="/admin/messages" element={<ProtectedRoute admin><AdminMessages /></ProtectedRoute>} />
-              {/* Static pages - placeholder */}
-              <Route path="/about" element={<StaticPage title="About Us" />} />
+              <Route path="/admin/pages" element={<ProtectedRoute admin><AdminPages /></ProtectedRoute>} />
+              {/* Dynamic pages */}
+              <Route path="/pages/:slug" element={<Page />} />
               <Route path="/faq" element={<FAQ />} />
-              <Route path="/help" element={<StaticPage title="Help Center" />} />
-              <Route path="/privacy" element={<StaticPage title="Privacy Policy" />} />
-              <Route path="/terms" element={<StaticPage title="Terms & Conditions" />} />
-              <Route path="/refund" element={<StaticPage title="Refund Policy" />} />
-              <Route path="/returns" element={<StaticPage title="Returns Policy" />} />
               <Route path="*" element={<div className="text-center py-20"><h1 className="text-2xl font-bold text-gray-400">404 — Page not found</h1></div>} />
             </Routes>
           </Suspense>
@@ -130,10 +129,12 @@ function StaticPage({ title }) {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
-    </BrowserRouter>
+    <HelmetProvider>
+      <BrowserRouter>
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
+      </BrowserRouter>
+    </HelmetProvider>
   );
 }

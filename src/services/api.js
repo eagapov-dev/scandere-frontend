@@ -172,6 +172,15 @@ class ApiService {
   // Newsletter Campaigns
   getNewsletterStats() { return this.get('/admin/newsletter/stats'); }
   sendNewsletterCampaign(data) { return this.post('/admin/newsletter/send', data); }
+
+  // Pages (public)
+  getPage(slug) { return this.get(`/pages/${slug}`); }
+
+  // Pages (admin)
+  getAdminPages() { return this.get('/admin/pages'); }
+  createPage(data) { return this.post('/admin/pages', data); }
+  updatePage(id, data) { return this.put(`/admin/pages/${id}`, data); }
+  deletePage(id) { return this.del(`/admin/pages/${id}`); }
 }
 
 export const api = new ApiService();
