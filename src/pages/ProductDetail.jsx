@@ -4,6 +4,7 @@ import { api } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
 import ProductCard from '../components/ProductCard';
+import SEOHead from '../components/SEOHead';
 import { FiShoppingCart, FiDownload, FiFileText, FiMessageCircle, FiUser } from 'react-icons/fi';
 
 export default function ProductDetail() {
@@ -49,17 +50,42 @@ export default function ProductDetail() {
   const typeColors = { pdf: 'bg-red-100 text-red-700', xlsx: 'bg-green-100 text-green-700', docx: 'bg-blue-100 text-blue-700' };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-10">
-      <Link to="/products" className="text-brand-600 hover:text-brand-700 text-sm mb-6 inline-block">&larr; Back to products</Link>
+    <>
+      <SEOHead
+        title={product.meta_title || product.title}
+        description={product.meta_description || product.short_description || product.description}
+        keywords={product.meta_keywords}
+        ogTitle={product.og_title || product.title}
+        ogDescription={product.og_description || product.short_description}
+        ogImage={product.og_image || product.preview_image}
+        ogUrl={`https://scandereai.store/products/${product.slug}`}
+      />
+      <div className="max-w-7xl mx-auto px-4 py-10">
+        <Link to="/products" className="text-brand-600 hover:text-brand-700 text-sm mb-6 inline-block">&larr; Back to products</Link>
 
       {/* Product Detail */}
       <div className="bg-white rounded-xl border p-6 md:p-8 mb-10">
         <div className="flex flex-col md:flex-row gap-8">
           <div className="md:w-2/5">
-            <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-12 flex flex-col items-center justify-center aspect-[4/3]">
-              <FiFileText size={64} className="text-gray-300 mb-4" />
-              {product.file_type && (
-                <span className={`text-sm font-bold px-3 py-1 rounded ${typeColors[product.file_type] || 'bg-gray-100 text-gray-700'}`}>
+            <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl flex flex-col items-center justify-center aspect-[4/3] overflow-hidden relative">
+              {product.preview_image ? (
+                <img
+                  src={`http://localhost:8000/storage/${product.preview_image.replace('public/', '')}`}
+                  alt={product.title}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <>
+                  <FiFileText size={64} className="text-gray-300 mb-4" />
+                  {product.file_type && (
+                    <span className={`text-sm font-bold px-3 py-1 rounded ${typeColors[product.file_type] || 'bg-gray-100 text-gray-700'}`}>
+                      {product.file_type.toUpperCase()} Document
+                    </span>
+                  )}
+                </>
+              )}
+              {!product.preview_image && product.file_type && (
+                <span className={`absolute bottom-3 text-sm font-bold px-3 py-1 rounded ${typeColors[product.file_type] || 'bg-gray-100 text-gray-700'}`}>
                   {product.file_type.toUpperCase()} Document
                 </span>
               )}
@@ -231,6 +257,7 @@ export default function ProductDetail() {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 }

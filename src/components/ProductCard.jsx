@@ -28,8 +28,18 @@ export default function ProductCard({ product, compact = false }) {
     <Link to={`/products/${product.slug}`}
       className="group bg-white rounded-xl border hover:shadow-lg transition-all duration-200 overflow-hidden flex flex-col">
       {/* Preview */}
-      <div className="relative bg-gradient-to-br from-gray-50 to-gray-100 p-8 flex items-center justify-center">
-        <FiFileText size={compact ? 36 : 48} className="text-gray-300 group-hover:text-brand-400 transition" />
+      <div className="relative bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center overflow-hidden">
+        {product.preview_image ? (
+          <img
+            src={`http://localhost:8000/storage/${product.preview_image.replace('public/', '')}`}
+            alt={product.title}
+            className="w-full h-48 object-cover"
+          />
+        ) : (
+          <div className="p-8">
+            <FiFileText size={compact ? 36 : 48} className="text-gray-300 group-hover:text-brand-400 transition" />
+          </div>
+        )}
         {hasDiscount && (
           <span className="absolute top-3 left-3 text-xs font-bold px-2 py-1 rounded bg-gradient-to-r from-red-600 to-orange-600 text-white">
             SAVE {discountPercent}%

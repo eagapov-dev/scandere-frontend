@@ -20,7 +20,14 @@ export default function AdminProducts() {
     file_type: 'pdf',
     is_active: true,
     show_on_homepage: false,
-    file: null
+    file: null,
+    preview_image: null,
+    meta_title: '',
+    meta_description: '',
+    meta_keywords: '',
+    og_title: '',
+    og_description: '',
+    og_image: ''
   });
 
   useEffect(() => {
@@ -63,7 +70,14 @@ export default function AdminProducts() {
       file_type: 'pdf',
       is_active: true,
       show_on_homepage: false,
-      file: null
+      file: null,
+      preview_image: null,
+      meta_title: '',
+      meta_description: '',
+      meta_keywords: '',
+      og_title: '',
+      og_description: '',
+      og_image: ''
     });
     setShowModal(true);
   };
@@ -80,7 +94,14 @@ export default function AdminProducts() {
       file_type: product.file_type,
       is_active: product.is_active,
       show_on_homepage: product.show_on_homepage,
-      file: null
+      file: null,
+      preview_image: null,
+      meta_title: product.meta_title || '',
+      meta_description: product.meta_description || '',
+      meta_keywords: product.meta_keywords || '',
+      og_title: product.og_title || '',
+      og_description: product.og_description || '',
+      og_image: product.og_image || ''
     });
     setShowModal(true);
   };
@@ -103,6 +124,16 @@ export default function AdminProducts() {
     if (formData.file) {
       fd.append('file', formData.file);
     }
+    if (formData.preview_image) {
+      fd.append('preview_image', formData.preview_image);
+    }
+    // SEO fields
+    if (formData.meta_title) fd.append('meta_title', formData.meta_title);
+    if (formData.meta_description) fd.append('meta_description', formData.meta_description);
+    if (formData.meta_keywords) fd.append('meta_keywords', formData.meta_keywords);
+    if (formData.og_title) fd.append('og_title', formData.og_title);
+    if (formData.og_description) fd.append('og_description', formData.og_description);
+    if (formData.og_image) fd.append('og_image', formData.og_image);
 
     try {
       if (editingProduct) {
@@ -355,6 +386,19 @@ export default function AdminProducts() {
                 />
               </div>
 
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Preview Image (Optional)
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setFormData({ ...formData, preview_image: e.target.files[0] })}
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                />
+                <p className="text-xs text-gray-500 mt-1">Upload a preview image for this product (JPG, PNG, max 2MB)</p>
+              </div>
+
               <div className="flex items-center gap-4">
                 <label className="flex items-center gap-2">
                   <input
@@ -375,6 +419,79 @@ export default function AdminProducts() {
                   />
                   <span className="text-sm text-gray-700">Show on Homepage</span>
                 </label>
+              </div>
+
+              {/* SEO Fields */}
+              <div className="border-t pt-4 mt-4">
+                <h3 className="text-sm font-semibold text-gray-900 mb-3">SEO Settings (Optional)</h3>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Meta Title</label>
+                    <input
+                      type="text"
+                      value={formData.meta_title}
+                      onChange={(e) => setFormData({ ...formData, meta_title: e.target.value })}
+                      className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                      placeholder="Custom SEO title (leave empty to use product title)"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Meta Description</label>
+                    <textarea
+                      value={formData.meta_description}
+                      onChange={(e) => setFormData({ ...formData, meta_description: e.target.value })}
+                      className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                      rows="2"
+                      placeholder="SEO description for search engines"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Meta Keywords</label>
+                    <input
+                      type="text"
+                      value={formData.meta_keywords}
+                      onChange={(e) => setFormData({ ...formData, meta_keywords: e.target.value })}
+                      className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                      placeholder="keyword1, keyword2, keyword3"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">OG Title (Social Media)</label>
+                    <input
+                      type="text"
+                      value={formData.og_title}
+                      onChange={(e) => setFormData({ ...formData, og_title: e.target.value })}
+                      className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                      placeholder="Title for social media sharing"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">OG Description</label>
+                    <textarea
+                      value={formData.og_description}
+                      onChange={(e) => setFormData({ ...formData, og_description: e.target.value })}
+                      className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                      rows="2"
+                      placeholder="Description for social media sharing"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">OG Image URL</label>
+                    <input
+                      type="text"
+                      value={formData.og_image}
+                      onChange={(e) => setFormData({ ...formData, og_image: e.target.value })}
+                      className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
+                      placeholder="https://example.com/image.jpg"
+                    />
+                  </div>
+                </div>
               </div>
 
               <div className="flex items-center justify-end gap-3 pt-4 border-t">

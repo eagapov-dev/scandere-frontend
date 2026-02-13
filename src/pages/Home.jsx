@@ -371,9 +371,19 @@ export default function Home() {
                     </div>
                     <div className="p-6 flex flex-col flex-1">
                       <div className="flex items-center justify-center mb-6">
-                        <div className="w-20 h-20 bg-gradient-to-br from-brand-100 to-brand-200 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                          <FiFileText className="text-brand-600" size={40} />
-                        </div>
+                        {product.preview_image ? (
+                          <div className="w-full h-32 rounded-2xl overflow-hidden group-hover:scale-105 transition-transform">
+                            <img
+                              src={`http://localhost:8000/storage/${product.preview_image.replace('public/', '')}`}
+                              alt={product.title}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        ) : (
+                          <div className="w-20 h-20 bg-gradient-to-br from-brand-100 to-brand-200 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <FiFileText className="text-brand-600" size={40} />
+                          </div>
+                        )}
                       </div>
                       <h3 className="text-xl font-bold text-gray-900 mb-3 text-center group-hover:text-brand-600 transition">{product.title}</h3>
                       <p className="text-sm text-gray-600 text-center mb-6 leading-relaxed flex-1">{product.short_description || 'Professional template to help you succeed in your business.'}</p>
@@ -441,9 +451,19 @@ export default function Home() {
                       </div>
                       <div className="p-6 flex flex-col flex-1">
                         <div className="flex items-center justify-center mb-6">
-                          <div className="w-20 h-20 bg-gradient-to-br from-brand-100 to-brand-200 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <FiFileText className="text-brand-600" size={40} />
-                          </div>
+                          {product.preview_image ? (
+                            <div className="w-full h-32 rounded-2xl overflow-hidden group-hover:scale-105 transition-transform">
+                              <img
+                                src={`http://localhost:8000/storage/${product.preview_image.replace('public/', '')}`}
+                                alt={product.title}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          ) : (
+                            <div className="w-20 h-20 bg-gradient-to-br from-brand-100 to-brand-200 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                              <FiFileText className="text-brand-600" size={40} />
+                            </div>
+                          )}
                         </div>
                         <h3 className="text-xl font-bold text-gray-900 mb-3 text-center group-hover:text-brand-600 transition">{product.title}</h3>
                         <p className="text-sm text-gray-600 text-center mb-6 leading-relaxed flex-1">{product.short_description || 'Professional template to help you succeed in your business.'}</p>
